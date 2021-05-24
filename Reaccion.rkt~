@@ -2,9 +2,6 @@
 ;Pedir archivos externos
 (require "Fecha.rkt")
 
-;Entregar funciones
-(provide ListaReacciones?)
-
 ;TDA Reaccion
 ;Composicion: (int x int x Fecha x string x string) -> (IdPublicacion x IdReaccion x FechaReaccion x TipoReaccion x ContenidoReaccion) (Sujeto a cambios)
 
@@ -32,27 +29,3 @@
           #f)))
 
 ;Modificadores
-
-;Otros
-
-;TDA lista reacciones
-;Composicion: (Reaccion x Reaccion x ... x Reaccion)
-
-;Constructor
-(define (ListaReacciones)(list null))
-
-;Selectores
-
-;Pertenencia
-(define (ListaReacciones? ListaReacciones)
-  (if (not (list? ListaReacciones))
-      #f
-      (if (= (length ListaReacciones) 0)
-          #t
-          (if (Reaccion? (car ListaReacciones))
-              (ListaReacciones? (cdr ListaReacciones))
-              #f))))
-
-;Modificadores
-
-;Otros

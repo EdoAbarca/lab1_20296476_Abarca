@@ -21,7 +21,7 @@
 
 ;Pertenencia
 (define (Fecha? Fecha)
-  (if (or (null? Fecha) (not (list? Fecha)))
+  (if (not (list? Fecha))
       #f
       (cond
         ;Largo TDA fecha debe ser siempre 3
@@ -31,13 +31,13 @@
         [(or (> (getMes Fecha) 12) (< (getMes Fecha) 1)) #f]
         [(or (> (getAnio Fecha) 2021) (< (getAnio Fecha) 1970)) #f]
         ;A la fecha de creacion de este laboratorio
-        [(and (or (> (getDia Fecha) 22) (= (getDia Fecha) 22))
+        [(not(and (or (> (getDia Fecha) 22) (= (getDia Fecha) 22))
               (or (> (getMes Fecha) 5) (= (getMes Fecha) 5))
-              (or (> (getAnio Fecha) 2021) (= (getAnio Fecha) 2021))) #f]
+              (or (> (getAnio Fecha) 2021) (= (getAnio Fecha) 2021)))) #f]
         ;Respecto al mes escogido (meses con 28, 30 y 31 dias)
         ;Febrero tiene 28/29 dias, dependiendo del año (por defecto, Anio%4 == 0 implica anio bisiesto, 29 dias)
-        [(not (and (= (getMes Fecha) 2)  (< getDia 30) (= (remainder (getAnio Fecha) 4) 0)))#f]
-        [(not (and (= (getMes Fecha) 2)  (< getDia 29) (not (= (remainder (getAnio Fecha) 4) 0))))#f]
+        [(not (and (= (getMes Fecha) 2)  (< (getDia Fecha) 30) (= (remainder (getAnio Fecha) 4) 0)))#f]
+        [(not (and (= (getMes Fecha) 2)  (< (getDia Fecha) 29) (not (= (remainder (getAnio Fecha) 4) 0))))#f]
         ;Los siguientes meses tienen 31 dias
         [(not (and (or (= (getMes Fecha) 1)
                        (= (getMes Fecha) 3)
@@ -50,3 +50,5 @@
         [(not (and (or (= (getMes Fecha) 4) (= (getMes Fecha) 6)(= (getMes Fecha) 9)(= (getMes Fecha)11)) (< getDia 31)))#f]
         ;Pruebas pasadas, el dato ingresado corresponde a TDA fecha
         [else #t])))
+
+;NECESITA DEBUG, COMPROBAR POR STRINGS

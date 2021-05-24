@@ -2,27 +2,26 @@
 ;Pedir archivos externos
 (require "Fecha.rkt")
 
-;Entregar funciones
-(provide ListaCuentas?)
-
 ;TDA Cuenta
-;Composicion: (NombreUsuario x ListaSeguidos x ListaSeguidosVuelta) (string x list x list)
+;Composicion: (NombreUsuario x TipoUsuario x ListaSeguidos x ListaSeguidosVuelta) (string x string x list x list)
 
 ;Constructor
-(define (CrearCuenta usuario seguidores siguiendo)(list usuario seguidores siguiendo))
+(define (CrearCuenta usuario tipo seguidores siguiendo)(list usuario tipo seguidores siguiendo))
 
 ;Selectores
 (define (getUsuarioCuenta Cuenta)(car Cuenta))
-(define (getSeguidoresCuenta Cuenta)(cadr Cuenta))
-(define (getSiguiendoCuenta Cuenta)(caddr Cuenta))
+(define (getTipoCuenta Cuenta)(cadr Cuenta))
+(define (getSeguidoresCuenta Cuenta)(caddr Cuenta))
+(define (getSiguiendoCuenta Cuenta)(cadddr Cuenta))
 
 ;Pertenencia
 (define (Cuenta? Cuenta)
-  (if (not (list? Cuenta))
+  (if (or (null? Cuenta) (not (list? Cuenta)))
       #f
       (cond
-        [(not (= (length Cuenta) 3)) #f]
+        [(not (= (length Cuenta) 4)) #f]
         [(not (string? (getUsuarioCuenta Cuenta))) #f]
+        [(not (string? (getTipoCuenta Cuenta))) #f]
         [(not (list? (getSeguidoresCuenta Cuenta))) #f]
         [(not (list? (getSiguiendoCuenta Cuenta))) #f]
         [else #t])))
@@ -31,12 +30,7 @@
 ;Agregar seguido
 ;(define (agregarSeguimiento usuarioASeguir CuentaActual))
 
-
-
-
 ;Otros
-;Verificar si usuario ingresado esta en lista seguidores
-;Verificar si usuario ingresado esta en lista seguidos
 
 ;TDA ListaCuenta
 ;Composicion: (Cuenta x Cuenta x Cuenta x ... x Cuenta)
@@ -63,7 +57,5 @@
               #f))))
 
 ;Modificadores
-;Al registrar un nuevo usuario, se debe ingresar una nueva cuenta
-(define (RegistrarCuenta Cuenta ListaCuentas) (cons Cuenta ListaCuentas))
 
 ;Otros
