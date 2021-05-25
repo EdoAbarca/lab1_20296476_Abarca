@@ -3,16 +3,23 @@
 (require "Fecha.rkt")
 
 ;Entregar funciones
-(provide ListaReacciones?)
+(provide CrearReaccion)
+(provide getIdPR)
+(provide getIdR)
+(provide getFechaR)
+(provide getCuentaR)
+(provide getTipoR)
+(provide getContenidoR)
+(provide Reaccion?)
 
 ;TDA Reaccion
-;Composicion: (int x int x Fecha x string x string x string) -> (IdPublicacion x IdReaccion x FechaReaccion x CuentaReaccion x TipoReaccion x ContenidoReaccion) (Sujeto a cambios)
+;Composicion: (int x int x Fecha x string x string x string) -> (IdPublicacionReaccionada x IdReaccion x FechaReaccion x CuentaReaccion x TipoReaccion x ContenidoReaccion) (Sujeto a cambios)
 
 ;Constructor
-(define (CrearReaccion idP idR CuentaR FechaR TipoR ContenidoR) (list idP idR CuentaR FechaR TipoR ContenidoR))
+(define (CrearReaccion idPR idR CuentaR FechaR TipoR ContenidoR) (list idPR idR CuentaR FechaR TipoR ContenidoR))
 
 ;Selectores
-(define (getIdP Reaccion)(car Reaccion))
+(define (getIdPR Reaccion)(car Reaccion))
 (define (getIdR Reaccion)(cadr Reaccion))
 (define (getFechaR Reaccion)(caddr Reaccion))
 (define (getCuentaR Reaccion)(cadddr Reaccion))
@@ -25,7 +32,7 @@
       #f
       (cond
         [(not (= (length Reaccion) 6)) #f] ;TDA Reaccion tiene 6 elementos
-        [(not (integer? (getIdP Reaccion))) #f] ;ID publicacion es un entero
+        [(not (integer? (getIdPR Reaccion))) #f] ;ID publicacion es un entero
         [(not (integer? (getIdR Reaccion))) #f] ;ID reaccion es un entero
         [(not (Fecha? (getFechaR Reaccion))) #f] ;Fecha reaccion es TDA Fecha
         [(not (string? (getCuentaR Reaccion))) #f] ;Cuenta que realiza reaccion se identifica con el nombre
@@ -37,24 +44,3 @@
 
 ;Otros
 
-;TDA lista reacciones
-;Composicion: (Reaccion x Reaccion x ... x Reaccion)
-
-;Constructor
-(define (ListaReacciones)(list null))
-
-;Selectores
-
-;Pertenencia
-(define (ListaReacciones? ListaReacciones)
-  (if (not (list? ListaReacciones)) ;Lista de listas
-      #f
-      (if (= (length ListaReacciones) 0) ;Si se revisaron todos los elementos/la lista esta vacia, es TDA ListaReacciones
-          #t
-          (if (Reaccion? (car ListaReacciones)) ;Si el elemento actual es TDA reaccion
-              (ListaReacciones? (cdr ListaReacciones)) ;Se revisa el siguiente elemento
-              #f)))) ;La lista ingresada no es TDA ListaReacciones
-
-;Modificadores
-
-;Otros

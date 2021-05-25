@@ -5,8 +5,19 @@
 ;Nombre alumno: Eduardo Abarca
 ;RUT: 20.296.476-1
 ;Seccion: C-3
+;Profesor: Daniel Gacitua
 
 ;PEDIR ARCHIVOS EXTERNOS
+(require "Fecha.rkt")
+(require "Usuario.rkt")
+(require "Cuenta.rkt")
+(require "Publicacion.rkt")
+(require "Reaccion.rkt")
+(require "ListaUsuarios.rkt")
+(require "ListaCuentas.rkt")
+(require "ListaPublicaciones.rkt")
+(require "ListaReacciones.rkt")
+(require "SocialNetwork.rkt")
 
 ;///////////////////////////// REQUERIMIENTOS FUNCIONALES EXIGIDOS //////////////////////////////
 
@@ -35,8 +46,8 @@
     [else #t])) ;Se retorna operation, pero se debe actualizar TDA socialnetwork con el usuario logueado
 
 ;Funcion que realiza un post mientras haya un usuario con sesion iniciada
-;Dominio: (SocialNetwork)
-;Recorrido: (SocialNetwork)
+;Dominio: (SocialNetwork x )
+;Recorrido: SocialNetwork
 ;Recursion: 
 
 ;///////////////////////////// REQUERIMIENTOS OPTATIVOS //////////////////////////////

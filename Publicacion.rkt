@@ -3,13 +3,20 @@
 (require "Fecha.rkt")
 
 ;Entregar funciones
-(provide ListaPublicaciones?)
+(provide CrearPublicacion)
+(provide getIdP)
+(provide getFechaP)
+(provide getUsuarioP)
+(provide getTipoP)
+(provide getContenidoP)
+(provide getCompartidosP)
+(provide Publicacion?)
 
 ;TDA Publicacion
 ;Composicion: (int x Fecha x string x string x string x list) -> (ID x FechaPublicacion x usuarioPublicacion x TipoDePublicacion x ContenidoPublicacion x UsuariosCompartidos) (Sujeto a cambios)
 
 ;Constructor
-(define (crearPublicacion id fecha usuario tipo contenido compartidos)
+(define (CrearPublicacion id fecha usuario tipo contenido compartidos)
   (list id fecha usuario tipo contenido compartidos))
 
 ;Selectores
@@ -49,25 +56,3 @@
 
 ;Otros
 
-;TDA lista publicaciones
-;Composicion: (Publicacion x Publicacion x ... x Publicacion)
-
-;Constructor
-(define (crearListaPublicaciones)(list null))
-
-;Selectores
-;(define (getPublicacionXID ID ListaPublicaciones)())
-
-;Pertenencia
-(define (ListaPublicaciones? ListaPublicaciones)
-  (if (not (list? ListaPublicaciones)) ;Ambos TDA's deben ser listas
-      #f
-      (if (= (length ListaPublicaciones) 0) ;Se llegó al final de la lista, sea vacia o se haya recorrido, es TDA lista publicaciones
-          #t
-          (if (Publicacion? (car ListaPublicaciones)) ;Si el elemento actual corresponde a un TDA publicacion
-              (ListaPublicaciones? (cdr ListaPublicaciones)) ;Se revisa el siguiente elemento de la lista
-              #f))));Si no, la lista no cumple con la composición especificada, no es TDA lista publicaciones
-
-;Modificadores
-
-;Otros
