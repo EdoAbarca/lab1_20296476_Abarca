@@ -64,10 +64,14 @@
 
 ;Modificadores
 ;Luego del procesamiento de cada funcion, se deben actualizar los textos de encriptado y desencriptado
+(define (ActualizarSocialNetwork SocialNetwork ElementoSN Codigo)
+  ())
 
 ;Otros
 ;Funcion de encriptacion
 (define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
+
+;
 ;Funcion que transforma el stack de social network a un string, esto para poder encriptar y desencriptar el contenido
 ;(define (stack->string stack)(string-append (cuentas->string stack usuariologueado) (publicaciones->string stack usuariologueado) (reacciones->string stack usuariologueado)))
 

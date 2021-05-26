@@ -10,7 +10,7 @@
 (provide EstaRegistrado)
 (provide CredencialesSonCorrectas)
 
-;TDA ListaUsuarios
+;TDA ListaUsuarios (EVALUAR MOVER FECHA REGISTRO A CUENTA, PUES USUARIO SOLO CORRESPONDE A CREDENCIALES)
 ;Composicion: (Usuario x Usuario x ... x Usuario)
 
 ;Constructor
@@ -61,3 +61,4 @@
     [(and (eqv? (getNombreUsuario (car ListaUsuarios)) usuario) (eqv? (getPassUsuario (car ListaUsuarios)) pass)) #t]
     ;No se cumple ninguno de los puntos anteriores, se revisa el siguiente usuario registrado
     [else (CredencialesSonCorrectas (cdr ListaUsuarios) usuario pass)]))
+
