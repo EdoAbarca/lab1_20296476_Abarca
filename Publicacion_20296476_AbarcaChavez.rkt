@@ -1,16 +1,9 @@
 #lang racket
 ;Pedir archivos externos
-(require "Fecha.rkt")
+(require "Fecha_20296476_AbarcaChavez.rkt")
 
 ;Entregar funciones
-(provide CrearPublicacion)
-(provide getIdP)
-(provide getFechaP)
-(provide getUsuarioP)
-(provide getTipoP)
-(provide getContenidoP)
-(provide getCompartidosP)
-(provide Publicacion?)
+(provide (all-defined-out))
 
 ;TDA Publicacion
 ;Composicion: (int x Fecha x string x string x string x list) -> (ID x FechaPublicacion x usuarioPublicacion x TipoDePublicacion x ContenidoPublicacion x UsuariosCompartidos) (Sujeto a cambios)
@@ -29,10 +22,10 @@
 
 ;Pertenencia
 (define (Publicacion? Publicacion)
-  (if (not (list? Publicacion)) ;TDA se basa en lista, debe ser si o si una
+  (if (not (list? Publicacion)) ;Los TDAs se basan en listas, el parametro de entrada DEBE ser una lista
       #f
       (cond
-        [(not (= (length Publicacion) 6)) #f] ;TDA de 5 elementos
+        [(not (= (length Publicacion) 6)) #f] ;TDA Publicacion tiene 6 elementos
         [(not (integer? (getIdP Publicacion))) #f] ;ID entero
         [(not (Fecha? (getFechaP Publicacion))) #f] ;TDA fecha
         [(not (string? (getUsuarioP Publicacion))) #f] ;Usuario es string

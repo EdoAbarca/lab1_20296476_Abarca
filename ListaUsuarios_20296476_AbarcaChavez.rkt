@@ -1,16 +1,12 @@
 #lang racket
 ;Pedir archivos externos
-(require "Fecha.rkt")
-(require "Usuario.rkt")
+(require "Fecha_20296476_AbarcaChavez.rkt")
+(require "Usuario_20296476_AbarcaChavez.rkt")
 
 ;Entregar funciones
-(provide CrearListaUsuarios)
-(provide ListaUsuarios?)
-(provide EfectuarRegistro)
-(provide EstaRegistrado)
-(provide CredencialesSonCorrectas)
+(provide (all-defined-out))
 
-;TDA ListaUsuarios (EVALUAR MOVER FECHA REGISTRO A CUENTA, PUES USUARIO SOLO CORRESPONDE A CREDENCIALES)
+;TDA ListaUsuarios
 ;Composicion: (Usuario x Usuario x ... x Usuario)
 
 ;Constructor
@@ -19,14 +15,15 @@
 ;Selectores
 
 ;Pertenencia
+;Recursion: De cola
 (define (ListaUsuarios? ListaUsuarios)
-  (if (not (list? ListaUsuarios))
+  (if (not (list? ListaUsuarios)) ;Los TDAs se basan en listas, el parametro de entrada DEBE ser una lista
       #f
-      (if (= (length ListaUsuarios) 0)
+      (if (= (length ListaUsuarios) 0) ;Lista recorrida (o vacia) sirve como TDA ListaUsuarios
           #t
-          (if (Usuario? (car ListaUsuarios))
-              (ListaUsuarios? (cdr ListaUsuarios))
-              #f))))
+          (if (Usuario? (car ListaUsuarios)) ;Elemento seleccionado debe ser TDA Usuario
+              (ListaUsuarios? (cdr ListaUsuarios)) ;Se revisa siguiente elemento
+              #f)))) ;NO es TDA Usuario, el parametro no vale como TDA ListaUsuarios
 
 ;Modificadores
 ;Modificador para registrar un nuevo usuario en caso de que este disponible

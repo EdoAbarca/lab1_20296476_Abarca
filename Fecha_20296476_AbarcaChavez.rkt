@@ -1,11 +1,6 @@
 #lang racket
 ;Entregar funciones
-(provide Fecha)
-(provide FechaDefecto)
-(provide getDia)
-(provide getMes)
-(provide getAnio)
-(provide Fecha?)
+(provide (all-defined-out))
 
 ;TDA Fecha
 ;Composicion: (Dia x Mes x Anio) (int x int x int)
@@ -34,7 +29,7 @@
         [(and (or (> (getDia Fecha) 27) (= (getDia Fecha) 27))
               (or (> (getMes Fecha) 5) (= (getMes Fecha) 5))) #f]
         ;Respecto al mes escogido (meses con 28, 30 y 31 dias)
-        ;Febrero tiene 28/29 dias, dependiendo del año (por defecto, Anio%4 == 0 implica anio bisiesto, 29 dias)
+        ;Febrero tiene 28/29 dias, dependiendo del año (por defecto, Anio%(remainder)4 == 0 implica anio bisiesto, 29 dias)
         [(and (= (getMes Fecha) 2) (= (remainder (getAnio Fecha) 4) 0)) (not (< (getDia Fecha) 30)) #f]
         [(and (= (getMes Fecha) 2) (not (= (remainder (getAnio Fecha) 4) 0)) (not (< (getDia Fecha) 29))) #f]
         ;Los siguientes meses tienen 31 dias

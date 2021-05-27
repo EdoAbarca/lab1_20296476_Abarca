@@ -1,16 +1,9 @@
 #lang racket
 ;Pedir archivos externos
-(require "Fecha.rkt")
+(require "Fecha_20296476_AbarcaChavez.rkt")
 
 ;Entregar funciones
-(provide CrearReaccion)
-(provide getIdPR)
-(provide getIdR)
-(provide getFechaR)
-(provide getCuentaR)
-(provide getTipoR)
-(provide getContenidoR)
-(provide Reaccion?)
+(provide (all-defined-out))
 
 ;TDA Reaccion
 ;Composicion: (int x int x Fecha x string x string x string) -> (IdPublicacionReaccionada x IdReaccion x FechaReaccion x CuentaReaccion x TipoReaccion x ContenidoReaccion) (Sujeto a cambios)
@@ -27,8 +20,8 @@
 (define (getContenidoR Reaccion)(car (cdr (cddddr Reaccion))))
 
 ;Pertenencia
-(define (Reaccion? Reaccion)
-  (if (not (list? Reaccion))
+(define (Reaccion? Reaccion) 
+  (if (not (list? Reaccion)) ;Los TDAs se basan en listas, el parametro de entrada DEBE ser una lista
       #f
       (cond
         [(not (= (length Reaccion) 6)) #f] ;TDA Reaccion tiene 6 elementos
