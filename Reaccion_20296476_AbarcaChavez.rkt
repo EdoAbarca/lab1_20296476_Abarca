@@ -30,6 +30,8 @@
         [(not (Fecha? (getFechaR Reaccion))) #f] ;Fecha reaccion es TDA Fecha
         [(not (string? (getCuentaR Reaccion))) #f] ;Cuenta que realiza reaccion se identifica con el nombre
         [(not (string? (getTipoR Reaccion))) #f] ;Tipo de reaccion es un string
+        ;Tipo de reaccion debe cumplir un dominio
+        [(not (or (eqv? (getTipoR Reaccion) "Like") (eqv? (getTipoR Reaccion) "Comentario"))) #f]
         [(not (string? (getContenidoR Reaccion))) #f] ;Contenido de la reaccion es un string
         [else #t]))) ;Pruebas cumplidas, el elemento ingresado es un TDA Reaccion
 

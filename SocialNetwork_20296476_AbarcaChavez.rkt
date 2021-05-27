@@ -9,6 +9,7 @@
 (require "ListaCuentas_20296476_AbarcaChavez.rkt")
 (require "ListaPublicaciones_20296476_AbarcaChavez.rkt")
 (require "ListaReacciones_20296476_AbarcaChavez.rkt")
+(require "SocialNetworkSF_20296476_AbarcaChavez.rkt")
 
 ;Entregar funciones
 (provide (all-defined-out))
@@ -17,45 +18,47 @@
 ;Composicion: (String X Fecha X EncryptFunction X DecryptFunction x CuentaLogueada x ListaUsuarios x ListaCuentas x ListaPublicaciones x ListaReacciones)
 
 ;Constructor
-(define (EmptyIG nombre fecha encrypt decrypt) (list nombre fecha encrypt decrypt (SNSFvacio))) ;Agregar dentro de encrypt y decrypt el texto respectivo (a realizars)
-;(define (IG nombre fecha encrypt decrypt) (list nombre fecha encrypt decrypt null (CrearListaUsuarios) (CrearListaCuentas) (CrearListaPublicaciones) (CrearListaReacciones)))
+(define (EmptyFB nombre fecha encrypt decrypt) (list nombre fecha (encrypt (NoFirmaSN->string (SNSFvacio))) (decrypt (NoFirmaSN->string (SNSFvacio))) (SNSFvacio))) ;Agregar dentro de encrypt y decrypt el texto respectivo (a realizars)
+;(define (FB nombre fecha encrypt decrypt) (list nombre fecha encrypt decrypt (SNSFcustom)))
+
+;No se creo constructor personalizado para no pasar a llevar la firma exigida en el enunciado
 
 ;Selectores
 (define (getNombreRed socialnetwork) (car socialnetwork))
 (define (getFechaRed socialnetwork) (cadr socialnetwork))
 (define (getEncriptado socialnetwork) (caddr socialnetwork))
 (define (getDecriptado socialnetwork) (cadddr socialnetwork))
+(define (getSNSF socialnetwork) (car (cddddr socialnetwork)))
 
 
 ;Pertenencia
 (define (SocialNetwork? socialnetwork)
-  (if (not (list? socialnetwork))
+  (if (not (list? socialnetwork)) ;Los TDAs se basan en listas, el parametro de entrada DEBE ser una lista
       #f
       (cond
-        [(not (= (length socialnetwork) 9)) #f]
-        [(not (string? (getNombreRed socialnetwork))) #f]
+        [(not (= (length socialnetwork) 5)) #f] ;TDA SocialNetwork tiene 5 elementos
+        [(not (string? (getNombreRed socialnetwork))) #f] ;Nombre red social debe ser un string y debe estar entre las 3 opciones a continuacion
         [(not (or (eqv? (getNombreRed socialnetwork) "Instagram")
                   (eqv? (getNombreRed socialnetwork) "Facebook")
                   (eqv? (getNombreRed socialnetwork) "Twitter"))) #f]
-        [(not (Fecha? (getFechaRed socialnetwork))) #f]
-        [(not (procedure? (getEncriptado socialnetwork))) #f]
-        [(not (procedure? (getDecriptado socialnetwork))) #f]
-        [(not (or (null? (getCuentaLogueada socialnetwork)) (string? (getCuentaLogueada socialnetwork)))) #f]
-        [(not (ListaUsuarios? (getListaUsuarios socialnetwork))) #f]
-        [(not (ListaCuentas? (getListaCuentas socialnetwork))) #f]
-        [(not (ListaPublicaciones? (getListaPublicaciones socialnetwork))) #f]
-        [(not (ListaReacciones? (getListaReacciones socialnetwork))) #f]
-        [else #t])))
+        [(not (Fecha? (getFechaRed socialnetwork))) #f] ;Fecha de registro de red social debe ser TDA Fecha
+        [(not (procedure? (getEncriptado socialnetwork))) #f] ;Contenido encriptado debe ser un string (esta procesado antes de este punto)
+        [(not (procedure? (getDecriptado socialnetwork))) #f] ;Contenido encriptado (a decriptar) debe ser un string (esta procesado antes de este punto)
+        [(not (SNSF? (getSNSF socialnetwork)))#f] ;TDA SNSF, representa la materializacion del contenido a encriptar
+        [else #t]))) ;Pruebas pasadas, elemento ingresado por  parametro es TDA SocialNetwork
 
 ;Modificadores
-
-
+;Modificador para actualizar el TDA SocialNetwork (Esto despues de actualizar el TDA SNSF)
+(define (ActualizarSocialNetwork socialnetwork SNSFv2)
+  (list (getNombreRed socialnetwork) (getFechaRed socialnetwork) (encryptFn (NoFirmaSN->string SNSFv2)) (encryptFn (NoFirmaSN->string SNSFv2)) SNSFv2))
 
 ;Otros
-;Funcion de encriptacion
-(define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
+;Funcion que une la informacion encriptada con la de la red social, a la espera del llamado de la funcion principal en menu
+(define (PrevSocialNetwork->string socialnetwork)
+  (if (SocialNetwork? socialnetwork)
+      (string-append "\nNombre red social: " (getNombreRed socialnetwork) "\nFecha registro red social: " (Fecha->string (getFechaRed socialnetwork)) (NoFirmaSN->string (getSNSF socialnetwork)))
+      (encryptFn "Error: Dato ingresado no es TDA SocialNetwork.\n")))
 
-;
 ;Funcion que transforma el stack de social network a un string, esto para poder encriptar y desencriptar el contenido
 ;(define (stack->string stack)(string-append (cuentas->string stack usuariologueado) (publicaciones->string stack usuariologueado) (reacciones->string stack usuariologueado)))
 

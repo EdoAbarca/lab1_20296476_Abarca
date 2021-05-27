@@ -21,7 +21,7 @@
           #t
           (if (Cuenta? (car ListaCuentas)) ;Elemento seleccionado debe ser TDA Cuenta
               (ListaCuentas? (cdr ListaCuentas)) ;Se revisa siguiente elemento
-              #f)))) ;NO es TDA Cuenta, el parametro no vale como TDA ListaCuentas
+              #f)))) ;NO es TDA Cuenta, el parametro no vale como TDA ListaCuenta
 
 ;Pertenencia a usar para seguidores y siguiendo
 ;(define (RevisarContactosDeCadaCuenta ListaCuentasOr ListaCuentas UsuarioActual Seguidos Seguidores)
@@ -37,7 +37,7 @@
 
 
 ;Modificadores
-;Al registrar un nuevo usuario, se debe registrar una cuenta asociada a este usuario
+;Al registrar un nuevo usuario, se debe registrar una cuenta asociada a este usuario (Para register)
 (define (RegistrarCuenta Cuenta ListaCuentas)
   (if (= (length ListaCuentas) 0)
       (cons Cuenta null)

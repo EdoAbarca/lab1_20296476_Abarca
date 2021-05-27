@@ -18,7 +18,7 @@
 
 ;Constructor
 (define (SNSFvacio) (list null null null null null))
-;(define (SNSFcustom) (list null null null null null))
+;(define (SNSFcustom) (list null (CrearListaUsuarios) (CrearListaCuentas) (CrearListaPublicaciones) (CrearListaReacciones)))
 
 ;Selectores
 (define (getCuentaLogueada SNSF) (car SNSF))
@@ -41,18 +41,6 @@
         [else #t]))) ;Pruebas pasadas, el elemento ingresado por parametro es TDA SNSF
 
 ;Modificadores
-;Modificador para actualizar el TDA SNSF en base a las listas involucradas
-
-(define (RetornoFinal SocialNetwork EncryptInfo DecryptInfo)
-  (list
-   (getCuentaLogueada SocialNetwork)
-   (getListaUsuarios SocialNetwork)
-   (getListaCuentas SocialNetwork)
-   (getListaPublicaciones SocialNetwork)
-   (getListaReacciones SocialNetwork)))
-
-(define (ConcretarActualizacionSocialNetwork SocialNetwork) null)
-;  (RetornoFinal SocialNetwork () ())) ;Ingresar funcion que transforma el stack a string
 
 ;Luego del procesamiento de cada funcion, se debe actualizar el TDA SocialNetwork
 ;Se actualiza TDA con la lista a reemplazar segun codigo:
@@ -64,41 +52,49 @@
 (define (ActualizarSNSF SNSF ElementoSNSF Codigo)
   (cond
     [(not (integer? Codigo)) SNSF]
-    [(= Codigo 1) (ConcretarActualizacionSocialNetwork (list
+    [(= Codigo 1) ( (list
                                                          ElementoSNSF
                                                          (getListaUsuarios SNSF)
                                                          (getListaCuentas SNSF)
                                                          (getListaPublicaciones SNSF)
                                                          (getListaReacciones SNSF)))]
-    [(= Codigo 2) (ConcretarActualizacionSocialNetwork (list
+    [(= Codigo 2) ( (list
                                                          null ;Cerrar sesion
                                                          ElementoSNSF
                                                          (getListaCuentas SNSF)
                                                          (getListaPublicaciones SNSF)
                                                          (getListaReacciones SNSF)))]
-    [(= Codigo 3) (ConcretarActualizacionSocialNetwork (list
+    [(= Codigo 3) ( (list
                                                          null ;Cerrar sesion
                                                          (getListaUsuarios SNSF)
                                                          ElementoSNSF
                                                          (getListaPublicaciones SNSF)
                                                          (getListaReacciones SNSF)))]
-    [(= Codigo 4) (ConcretarActualizacionSocialNetwork (list
+    [(= Codigo 4) ( (list
                                                          null ;Cerrar sesion
                                                          (getListaUsuarios SNSF)
                                                          (getListaCuentas SNSF)
                                                          ElementoSNSF
                                                          (getListaReacciones SNSF)))]
-    [(= Codigo 5) (ConcretarActualizacionSocialNetwork (list
+    [(= Codigo 5)  (list
                                                          null ;Cerrar sesion
                                                          (getListaUsuarios SNSF)
                                                          (getListaCuentas SNSF)
                                                          (getListaPublicaciones SNSF)
-                                                         ElementoSNSF))]
+                                                         ElementoSNSF)]
     [else SNSF]))
-;No se creo constructor personalizado para esta instancia para no pasar a llevar la firma exigida en el enunciado
+
+;Actualizador mas sencillo, pero mas supceptible a efectos colaterales
+;Dominio: (string/null x CuentaLogueada x ListaUsuarios x ListaCuentas x ListaPublicaciones x ListaReacciones)
+;Recorrido: SNSF
+(define (ActualizarSNSFv2 CuentaLogueada ListaUsuarios ListaCuentas ListaPublicaciones ListaReacciones)
+  (if (SNSF? (list CuentaLogueada ListaUsuarios ListaCuentas ListaPublicaciones ListaReacciones))
+      (list CuentaLogueada ListaUsuarios ListaCuentas ListaPublicaciones ListaReacciones)
+      (list null null null null null)))
 
 ;Otros
-
+;Funcion de encriptacion
+(define encryptFn (lambda (s) (list->string (reverse (string->list s)))))
 ;SITUACION: NO RESULTO MOVER ESTAS FUNCIONES A TDA SOCIALNETWORK, POR LO QUE SE TUVO QUE CREAR ESTE TDA PARA PODER HACER EFECTIVA LA CONVERSION DE LOS DATOS A STRING
 
 ;//////////////////////////////////////////// FUNCIONES DE CONVERSION DE LISTAS A STRING ///////////////////////////////////////////////////////////////////
@@ -119,47 +115,88 @@
 (define (Contactos->string Contactos)
   (cond
     [(= (length Contactos) 0) "\n"]
-    [else (string-append (car Contactos) "\n" (Contactos->string (cdr Contactos)))]))
+    [else (string-append (car Contactos) ", desde " (Fecha->string (cadr Contactos)) "\n" (Contactos->string (cdr Contactos)))]))
 
 ;Funcion de conversion de TDA ListaReacciones a string si IdPublicacion de TDA Reaccion apuntado coincide con IdPublicacion por parametro
 ;Dominio: (SocialNetwork x ListaReacciones x integer)
 ;Recorrido: string
 ;Recursion: Natural
-(define (ReaccionesPublicacion->string SocialNetwork ListaReacciones IdPublicacion)
+(define (ReaccionesPublicacion->string SNSF ListaReacciones IdPublicacion)
   (cond
     [(= (length ListaReacciones) 0) "\n"]
-    [(= (getIdPR (car ListaReacciones)) IdPublicacion) (string-append (ReaccionesPublicacion->string (cdr ListaReacciones) IdPublicacion))]
+    [(= (getIdPR (car ListaReacciones)) IdPublicacion)
+     (string-append
+      "\nID Publicacion: " (getIdPR ListaReacciones)
+      "\nID Publicacion: " (getIdR ListaReacciones)
+      "\nFecha reaccion: " (getFechaR ListaReacciones)
+      "\nCuenta reaccion: " (getCuentaR ListaReacciones)
+      "\nTipo reaccion: " (getTipoR ListaReacciones)
+      "\nContenido reaccion: " (getContenidoR ListaReacciones)
+      (ReaccionesPublicacion->string (cdr ListaReacciones) IdPublicacion))]
     [else (ReaccionesPublicacion->string (cdr ListaReacciones) IdPublicacion)]))
+
 
 ;Funcion de conversion de TDA ListaPublicaciones a string si NombreCuenta de TDA Publicacion apuntado coincide con NombreCuenta por parametro
 ;Dominio: (SocialNetwork x ListaPublicaciones x string)
 ;Recorrido: string
 ;Recursion: Natural
-(define (Publicaciones->string SocialNetwork ListaPublicaciones NombreCuenta)
+(define (Publicaciones->string SNSF ListaPublicaciones UsuarioCuenta)
   (cond
     [(= (length ListaPublicaciones) 0) "\n"]
-    [(eqv? (getUsuarioP (car ListaPublicaciones)) NombreCuenta) (string-append "AgregarContenido" (ReaccionesPublicacion->string SocialNetwork) (Publicaciones->string (cdr ListaPublicaciones) NombreCuenta))]
-    [else (Publicaciones->string (cdr ListaPublicaciones) NombreCuenta)]))
+    [(eqv? (getCuentaOrigenP (car ListaPublicaciones)) UsuarioCuenta) (string-append
+                                                                  "\nID: " (getIdP (car ListaPublicaciones))
+                                                                  "\nCuenta perteneciente: " (getCuentaOrigenP (car ListaPublicaciones))
+                                                                  "\nTipo de publicacion: " (getTipoP (car ListaPublicaciones))
+                                                                  "\nContenido publicacion: " (getContenidoP (car ListaPublicaciones))
+                                                                  "\nCuenta que compartio esta publicacion: "(getCuentaQueComparteP (car ListaPublicaciones))
+                                                                  "\nCuenta destino: " (getCuentaDestinoP (car ListaPublicaciones))
+                                                                  "\n\nRESPUESTAS A ESTA PUBLICACION:\n\n"
+                                                                  (ReaccionesPublicacion->string SNSF (getListaReacciones SNSF) (getIdP (car ListaPublicaciones)))
+                                                                  (Publicaciones->string (cdr ListaPublicaciones) UsuarioCuenta))]
+    [else (Publicaciones->string (cdr ListaPublicaciones) UsuarioCuenta)]))
 
 ;Funcion de conversion de TDA ListaCuentas a string considerando 2 casos:
 ; - Sin usuario logueado (CuentaLogueada -> null) -> se transforma toda la lista
 ; - Con usuario logueado (CuentaLogueada -> not(null)) -> se transforma solo la cuenta involucrada (Para SocialNetwork -> string)
 ;Dominio: (SocialNetwork x ListaCuentas x string/null)
 ;Recorrido: string
-(define (Cuentas->string SocialNetwork ListaCuentas CuentaLogueada)
+(define (Cuentas->string SNSF ListaCuentas CuentaLogueada)
   (cond
-    [(= (length ListaCuentas) 0) "\n"]
-    [(null? CuentaLogueada) (string-append "Usuario: " "\nSeguidores:\n" "\nSiguendo:\n" )]
+    [(= (length ListaCuentas) 0) "\n"] ;Lista recorrida o vacia, salto de linea como condicion de borde
+    [(null? CuentaLogueada) ;No hay sesion iniciada, se debe mostrar todo lo que hay en el(los) stacks
+     (string-append
+      "Usuario: "
+      (getUsuarioCuenta (car ListaCuentas))
+      "\nFecha de registro: "
+      (Fecha->string (getFechaRegistroC (car ListaCuentas)))
+      "\n\nSeguidores:\n\n"
+      (Contactos->string (getSeguidoresCuenta (car ListaCuentas)))
+      "\nSiguendo:\n\n"
+      (Contactos->string (getSeguidosCuenta (car ListaCuentas)))
+      "\nPublicaciones:\n\n"
+      (Publicaciones->string SNSF (getListaPublicaciones SNSF) (getUsuarioCuenta (car ListaCuentas)))
+      (Cuentas->string SNSF (cdr ListaCuentas) CuentaLogueada))]
     [else (cond
-            [(eqv? (getUsuarioCuenta (car ListaCuentas)) CuentaLogueada) (string-append "Registrado como: " CuentaLogueada "\nDatos:\n\nFecha registro:" (Fecha->string ()) "\nSeguidores:\n" "\nSiguendo:\n" "\nPublicaciones:\n")]
-            [else (Cuentas->string SocialNetwork (cdr ListaCuentas) CuentaLogueada)])]))
+            [(eqv? (getUsuarioCuenta (car ListaCuentas)) CuentaLogueada)
+             (string-append
+              "Registrado como: "
+              CuentaLogueada
+              "\nDatos:\n\nFecha registro:"
+              (Fecha->string (getFechaRegistroC (car ListaCuentas)))
+              "\nSeguidores:\n\n"
+              (Contactos->string (getSeguidoresCuenta (car ListaCuentas)))
+              "\nSiguendo:\n"
+              (Contactos->string (getSeguidosCuenta (car ListaCuentas)))
+              "\nPublicaciones:\n\n"
+              (Publicaciones->string SNSF (getListaPublicaciones SNSF) CuentaLogueada))]
+            [else (Cuentas->string SNSF (cdr ListaCuentas) CuentaLogueada)])]))
 
 ;Funcion de conversion parcial de TDA socialnetwork a string (elementos fuera de la firma del constructor)
 ;Dominio: SocialNetwork
 ;Recorrido: string
-(define (NoFirmaSN->string SocialNetwork)
-  (if (SocialNetwork? SocialNetwork)
-      (string-append "Muestra contenido fuera de la firma:\n\n" (Cuentas->string SocialNetwork (getListaCuentas SocialNetwork) (getCuentaLogueada SocialNetwork)) "Publicaciones y reacciones:\n\n" Publicaciones->string )
-      ("Error: Elemento ingresado no es TDA SocialNetwork.\n")))
+(define (NoFirmaSN->string SNSF)
+  (if (SNSF? SNSF)
+      (string-append "Muestra contenido fuera de la firma:\n\n" (Cuentas->string SNSF (getListaCuentas SNSF) (getCuentaLogueada SNSF)))
+      ("Error: Elemento ingresado no es TDA SNSF, no es posible transformar la informacion almacenada.\n")))
 
-;////////////////////////////////// FIN FUNCIONES DE CONVERSION, AHORA SI SE MUESTRA TDA SOCIALNETWORK //////////////////////////////////////
+;////////////////////////////////////////////// FIN FUNCIONES DE CONVERSION //////////////////////////////////////////////////

@@ -18,6 +18,7 @@
 (require "ListaCuentas_20296476_AbarcaChavez.rkt")
 (require "ListaPublicaciones_20296476_AbarcaChavez.rkt")
 (require "ListaReacciones_20296476_AbarcaChavez.rkt")
+(require "SocialNetworkSF_20296476_AbarcaChavez.rkt")
 (require "SocialNetwork_20296476_AbarcaChavez.rkt")
 
 ;///////////////////////////// REQUERIMIENTOS FUNCIONALES EXIGIDOS //////////////////////////////
@@ -47,7 +48,7 @@
   (cond
     [(not (SocialNetwork? socialnetwork)) (operation socialnetwork)]
     [(not (and (string? username) (string? password) (procedure? operation))) (operation socialnetwork)]
-    [(not (CredencialesSonCorrectas (getListaUsuarios (getStack socialnetwork)) username password)) (operation socialnetwork)]
+    [(not (CredencialesSonCorrectas (getListaUsuarios (getSNSF socialnetwork)) username password)) (operation socialnetwork)]
     [else #t])) ;Se retorna operation, pero se debe actualizar TDA socialnetwork con el usuario logueado
 
 ;Funcion que, con sesion iniciada, realiza un post en la red social
@@ -55,10 +56,10 @@
 ;Dominio por currificacion: (Fecha x '(Contenido x '(string x string x ... x string)))
 ;Recorrido: SocialNetwork
 ;Recursion: Natural
-(define (post socialnetwork)
+(define (post socialnetwork) ;Se debe crear una funcion que genere todas las publicaciones en base a la compartida y guardarla en su respectivo stack
   (lambda (date)
     (lambda (content . users)
-      (if (and (SocialNetwork? socialnetwork) (Fecha? date) ()) ;Revisar si tenemos TDA socialnetwork, hay usuario logueado y los datos ingresados por lambda son correctos
+      (if (and (SocialNetwork? socialnetwork) (string? (getCuentaLogueada (getSNSF socialnetwork))) (Fecha? date) (string? content)) ;Revisar si tenemos TDA socialnetwork, hay usuario logueado y los datos ingresados por lambda son correctos
           () ;Se revisa si es posible
           ()))))
 
@@ -72,6 +73,19 @@
     (lambda (user)
       ;Revisar si tenemos TDA socialnetwork, hay usuario logueado y los datos ingresados por lambda son correctos
       (if (and (SocialNetwork? socialnetwork) (string? (getUsuarioLogueado socialnetwork)) (Fecha? date) (string? user))
+          () ;Se verifica si el usuario ingresado existe
+          socialnetwork))));Datos ingresados erroneos, se retorna socialnetwork sin actualizacion
+
+;Funcion que, con sesion iniciada, comparte una publicacion ya realizada a otro usuario
+;Dominio: (SocialNetwork)
+;Dominio por currificacion: (Fecha x NombreUsuario)
+;Recorrido: SocialNetwork
+;Recursion: Natural
+(define (share socialnetwork)
+  (lambda (date)
+    (lambda (postID . listUser)
+      ;Revisar si tenemos TDA socialnetwork, hay usuario logueado y los datos ingresados por lambda son correctos
+      (if (and (SocialNetwork? socialnetwork) (string? (getUsuarioLogueado socialnetwork)) (Fecha? date) (integer? postID))
           () ;Se verifica si el usuario ingresado existe
           socialnetwork))));Datos ingresados erroneos, se retorna socialnetwork sin actualizacion
 
