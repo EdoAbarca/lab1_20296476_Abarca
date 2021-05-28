@@ -29,13 +29,13 @@
 ;Modificador para funcion "post", que se encargara de ingresar en la lista publicaciones todas las publicaciones nacidas al llamar a esta funcion
 ;Dominio: (ListaPublicaciones x integer x Fecha x string x list)
 ;Recorrido: ListaPublicaciones
-(define (AgregarNuevasPublicaciones ListaPublicaciones Largo Fecha CuentaLogueada Contenido CuentasDestino)
-  (if (and (ListaPublicaciones? ListaPublicaciones) (integer? Largo) (string? CuentaLogueada) (Fecha? Fecha) (string?) (list? CuentasDestino))
+(define (AgregarNuevasPublicaciones ListaPublicaciones LargoOr CuentaLogueada Fecha Contenido CuentasDestino)
+  (if (and (ListaPublicaciones? ListaPublicaciones) (integer? LargoOr) (string? CuentaLogueada) (Fecha? Fecha) (string? Contenido) (list? CuentasDestino))
       (cond
-        [(not (= (length ListaPublicaciones) 0)) (cons (car ListaPublicaciones) (AgregarNuevasPublicaciones (cdr ListaPublicaciones) Largo Fecha CuentaLogueada Contenido CuentasDestino))]
+        [(not (= (length ListaPublicaciones) 0)) (cons (car ListaPublicaciones) (AgregarNuevasPublicaciones (cdr ListaPublicaciones) LargoOr Fecha CuentaLogueada Contenido CuentasDestino))]
         [else (cond
-                [(not (= (length CuentasDestino) 0)) (cons (CrearPublicacion (+ Largo 1) Fecha CuentaLogueada (string-append Contenido "[COMPARTIDO]") (car CuentasDestino)) (AgregarNuevasPublicaciones ListaPublicaciones Largo Fecha CuentaLogueada (cdr CuentasDestino)))]
-                [else (cons (CrearPublicacion (+ Largo 1)) null)])])
+                [(not (= (length CuentasDestino) 0)) (cons (CrearPublicacion (+ LargoOr 1) Fecha CuentaLogueada "texto" (string-append Contenido "[COMPARTIDO]") (car CuentasDestino)) (AgregarNuevasPublicaciones ListaPublicaciones (+ LargoOr 1) Fecha CuentaLogueada (cdr CuentasDestino)))]
+                [else (cons (CrearPublicacion (+ LargoOr 1) Fecha CuentaLogueada "texto" (string-append Contenido "[COMPARTIDO]") (car CuentasDestino)) null)])])
       ListaPublicaciones))
 
 ;Otros

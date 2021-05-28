@@ -26,7 +26,7 @@
   (if (not (list? Publicacion)) ;Los TDAs se basan en listas, el parametro de entrada DEBE ser una lista
       #f
       (cond
-        [(not (= (length Publicacion) 7)) #f] ;TDA Publicacion tiene 6 elementos
+        [(not (= (length Publicacion) 7)) #f] ;TDA Publicacion tiene 7 elementos
         [(not (integer? (getIdP Publicacion))) #f] ;ID entero
         [(not (Fecha? (getFechaP Publicacion))) #f] ;TDA fecha
         [(not (string? (getCuentaOrigenP Publicacion))) #f] ;Usuario es string

@@ -39,9 +39,9 @@
         [(not (string? (getUsuarioCuenta Cuenta))) #f] ;Nombre usuario es string
         [(not (Fecha? (getFechaRegistroC Cuenta))) #f] ;Fecha registro es TDA Fecha
         [(not (list? (getSeguidoresCuenta Cuenta))) #f] ;Seguidores cuenta es una lista
-        [(not (ListaContactos? (getSeguidoresCuenta Cuenta)))#f] ;Se verifica veracidad en lista usuarios
+        [(not (ListaContactos? (getSeguidoresCuenta Cuenta)))#f] ;Se verifica veracidad en lista usuarios (NO LOGRADO)
         [(not (list? (getSeguidosCuenta Cuenta))) #f] ;S cuenta es una lista
-        [(not (ListaContactos? (getSeguidosCuenta Cuenta)))#f] ;Se verifica veracidad de lista usuarios
+        [(not (ListaContactos? (getSeguidosCuenta Cuenta)))#f] ;Se verifica veracidad de lista usuarios (NO LOGRADO)
         [else #t]))) ;Pruebas pasadas, elemento en parametro es TDA Cuenta
 
 ;Modificadores
@@ -67,5 +67,13 @@
 
 ;Otros
 ;Verificar si usuario ingresado esta en lista seguidores
+(define (EstaEnContactos CuentaApuntada ListaSeguidosLog ListaSeguidoresLog)
+  (cond
+    [(= (length ListaSeguidosLog) 0) #f]
+    [(= (length ListaSeguidoresLog) 0) #f]
+    [(eqv? CuentaApuntada (car ListaSeguidosLog)) (cond
+                                                 [(eqv? CuentaApuntada (car ListaSeguidoresLog)) #t]
+                                                 [else (EstaEnContactos CuentaApuntada ListaSeguidosLog (cdr ListaSeguidoresLog))])]
+    [else (EstaEnContactos CuentaApuntada (cdr ListaSeguidosLog) ListaSeguidoresLog)]))
 ;Verificar si usuario ingresado esta en lista seguidos
 

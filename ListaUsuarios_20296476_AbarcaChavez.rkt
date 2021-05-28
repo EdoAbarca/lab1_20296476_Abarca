@@ -28,10 +28,10 @@
 ;Modificadores
 ;Modificador para registrar un nuevo usuario en caso de que este disponible
 ;Datos se verifican antes de llegar a esta funcion
-(define (EfectuarRegistro ListaUsuarios NuevoUsuario)
+(define (RegistrarUsuario ListaUsuarios NuevoUsuario)
   (if (= (length ListaUsuarios) 0)
       (cons NuevoUsuario null)
-      (cons (car ListaUsuarios) (EfectuarRegistro (cdr ListaUsuarios) NuevoUsuario))))
+      (cons (car ListaUsuarios) (RegistrarUsuario (cdr ListaUsuarios) NuevoUsuario))))
 
 
 ;Otros
