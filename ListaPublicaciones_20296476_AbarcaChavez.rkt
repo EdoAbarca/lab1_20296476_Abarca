@@ -1,19 +1,25 @@
 #lang racket
-;Pedir archivos externos
+;Entregar todas las funciones implementadas en este archivo
+(provide (all-defined-out))
+
+;Pedir archivos
 (require "Fecha_20296476_AbarcaChavez.rkt")
 (require "Publicacion_20296476_AbarcaChavez.rkt")
 
-;Entregar funciones
-(provide (all-defined-out))
-
 ;TDA ListaPublicaciones
-;Composicion: (Publicacion x Publicacion x ... x Publicacion)
+;Composicion: (Publicacion1 x Publicacion2 x ... x PublicacionN)
+;            -> (TDA Publicacion x TDA Publicacion x ... x TDA Publicacion)
 
 ;Constructor
 (define (CrearListaPublicaciones)(list null))
 
 ;Selectores
-;(define (getPublicacionXID ID ListaPublicaciones)())
+(define (getPublicacionXId IdP ListaPublicaciones)
+      (if (= (length ListaPublicaciones) 0) ;No existe publicacion con ese id
+          null
+          (if (equal? (getIdP (car ListaPublicaciones)) IdP) ;Si se encontro publicacion
+              (car ListaPublicaciones) ;Se retorna
+              (getPublicacionXId IdP (cdr ListaPublicaciones))))) ;Se busca siguiente elemento
 
 ;Pertenencia
 (define (ListaPublicaciones? ListaPublicaciones)
@@ -26,16 +32,18 @@
               #f)))) ;NO es TDA Publicacion, el parametro no vale como TDA ListaPublicaciones
 
 ;Modificadores
-;Modificador para funcion "post", que se encargara de ingresar en la lista publicaciones todas las publicaciones nacidas al llamar a esta funcion
-;Dominio: (ListaPublicaciones x integer x Fecha x string x list)
-;Recorrido: ListaPublicaciones
-(define (AgregarNuevasPublicaciones ListaPublicaciones LargoOr CuentaLogueada Fecha Contenido CuentasDestino)
-  (if (and (ListaPublicaciones? ListaPublicaciones) (integer? LargoOr) (string? CuentaLogueada) (Fecha? Fecha) (string? Contenido) (list? CuentasDestino))
-      (cond
-        [(not (= (length ListaPublicaciones) 0)) (cons (car ListaPublicaciones) (AgregarNuevasPublicaciones (cdr ListaPublicaciones) LargoOr Fecha CuentaLogueada Contenido CuentasDestino))]
-        [else (cond
-                [(not (= (length CuentasDestino) 0)) (cons (CrearPublicacion (+ LargoOr 1) Fecha CuentaLogueada "texto" (string-append Contenido "[COMPARTIDO]") (car CuentasDestino)) (AgregarNuevasPublicaciones ListaPublicaciones (+ LargoOr 1) Fecha CuentaLogueada (cdr CuentasDestino)))]
-                [else (cons (CrearPublicacion (+ LargoOr 1) Fecha CuentaLogueada "texto" (string-append Contenido "[COMPARTIDO]") (car CuentasDestino)) null)])])
-      ListaPublicaciones))
+;Agregar publicacion (debe ser creada antes de ingresarse a esta funcion)
+(define (AgregarPublicacion ListaPublicaciones Publicacion)
+  (if (= (length ListaPublicaciones) 0)
+      (cons Publicacion null)
+      (cons (car ListaPublicaciones) (AgregarPublicacion (cdr ListaPublicaciones) Publicacion))))
+
+;Agregar conjunto de publicaciones a compartir
+(define (CompartirPublicacionesADestinos ListaPublicaciones PublicacionCompartida CuentaLogueada postID FechaComparte ListaDestinos CorrReacciones)
+  (cond
+    [(= (length ListaDestinos) 0) ListaPublicaciones]
+    [else (CompartirPublicacionesADestinos (AgregarPublicacion ListaPublicaciones (CrearPublicacion (+ (+ (length ListaPublicaciones) 1) CorrReacciones) postID (getFechaRegistroP PublicacionCompartida) (getContenidoP PublicacionCompartida) (getAutorP PublicacionCompartida) (getDestinosP PublicacionCompartida) FechaComparte CuentaLogueada (car ListaDestinos))) PublicacionCompartida CuentaLogueada postID FechaComparte (cdr ListaDestinos) CorrReacciones)]))
+
 
 ;Otros
+;Sin operaciones adicionales
