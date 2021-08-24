@@ -1,12 +1,12 @@
 #lang racket
 ;Laboratorio 1 Paradigmas de Programacion
 ;Archivo de requerimientos funcionales exigidos por enunciado
-;Objetivo: Simular la interaccion de un usuario en una red social  bajo el Paradigma Funcional
+;Objetivo: Simular la interaccion de un usuario en una red social, implementando la variante bajo el Paradigma Funcional
 ;Nombre alumno: Eduardo Abarca
 ;RUT: 20.296.476-1
 ;Seccion: C-3
 ;Profesor: Daniel Gacitua
-;Entrega: Comodin (16/08/2021) :)
+;Entrega: Comodin (24/08/2021) :)
 
 ;PEDIR ARCHIVOS EXTERNOS
 (require "Fecha_20296476_AbarcaChavez.rkt")
@@ -219,7 +219,7 @@
 ;Ejemplo de share a multiples destinos
 (define (IB8) (((login (IB7) "a" "b" follow) (Fecha 16 8 2021)) "c"))
 (define (IB9) (((login (IB8) "a" "b" follow) (Fecha 16 8 2021)) "e"))
-(define (IB10) (((login (IB9) "a" "b" share) (Fecha 16 8 2021)) 1 "c" "e")) ;Revisar, no se esta cumpliendo
+(define (IB10) (((login (IB9) "a" "b" share) (Fecha 16 8 2021)) 1 "c" "e"))
 
 ;////////////////////////////////////////////////////////////////// SOCIALNETWORK->STRING ////////////////////////////////////////////////////////////////////
 
@@ -371,4 +371,11 @@
 ;5) Ejemplo de like a un comentario
 (define (IB14) (((login (IB13) "a" "b" like) (Fecha 16 8 2021)) 6))
 
+;Caso no abordado: Like en publicacion/comentario no puede repetirse por parte de un mismo usuario (i.e., dar like mas de una vez a una misma publicacion/comentario)
+
 ;/////////////////////////////////////////////////////////////////////////// FIN //////////////////////////////////////////////////////////////////////////////
+
+;ASPECTOS A ARREGLAR:
+; - POST Y SHARE: DESTINOS NO VALIDOS SE DEBEN FILTRAR DE LA LISTA, NO MATAR LA OPERACION POR UN DESTINO NO VALIDO
+; - COMMENT: SOLO SE PUEDE COMENTAR PUBLICACIONES/COMENTARIOS DE CONTACTOS
+; - LIKE: SOLO SE PUEDE DAR LIKE A PUBLICACION O COMENTARIO 1 VEZ, NO SE PUEDE REPETIR
